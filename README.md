@@ -10,7 +10,8 @@ This program takes data about crashes in NYC and visualizes how the number of cr
 - [X] Program can read in CSV file
 - [X] Program can create CSV with subsection of data from original CSV file
         based on year and/or month
-
+- [X] Program can perform basic data cleaning of data received
+        
 ### Works in Progress:
 - [ ] More Testing
 - [ ] Documentation
