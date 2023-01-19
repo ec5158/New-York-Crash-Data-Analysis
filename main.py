@@ -5,10 +5,6 @@
 # @Author: Eric Chen
 # @Date: 2023-01-11
 #
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 import pandas as pd
 import numpy as np
@@ -91,7 +87,7 @@ def main():
     try:
         csv_filename = sys.argv[1]
     except:
-        print("Usage: main.py [csv_filename]")
+        print("Usage: main.py [filename.csv]")
         return
     data = pd.read_csv(csv_filename)
     year2021 = getMonthData(data, "8", "2021")
