@@ -9,18 +9,157 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import data_cleaning
 
 """
 
 """
-def makeBarGraph(data):
+def timeToNum(str_time):
+    nums = str_time.split(':')
+    return float(nums[0]) + (float(nums[1]) / 100.00)
+
+"""
+
+"""
+def simplifyTime(data):
+    rowCount = 0
+    for row in data.iterrows():
+        row = row[1]
+
+        match timeToNum(row[2]):
+            case num if num < 1.00:
+                data.iloc[rowCount, 2] = '0:00 - 0:59'
+            case num if 1.00 <= num < 2.00:
+                data.iloc[rowCount, 2] = '1:00 - 1:59'
+            case num if 2.00 <= num < 3.00:
+                data.iloc[rowCount, 2] = '2:00 - 2:59'
+            case num if 3.00 <= num < 4.00:
+                data.iloc[rowCount, 2] = '3:00 - 3:59'
+            case num if 4.00 <= num < 5.00:
+                data.iloc[rowCount, 2] = '4:00 - 4:59'
+            case num if 5.00 <= num < 6.00:
+                data.iloc[rowCount, 2] = '5:00 - 5:59'
+            case num if 6.00 <= num < 7.00:
+                data.iloc[rowCount, 2] = '6:00 - 6:59'
+            case num if 7.00 <= num < 8.00:
+                data.iloc[rowCount, 2] = '7:00 - 7:59'
+            case num if 8.00 <= num < 9.00:
+                data.iloc[rowCount, 2] = '8:00 - 8:59'
+            case num if 9.00 <= num < 10.00:
+                data.iloc[rowCount, 2] = '9:00 - 9:59'
+            case num if 10.00 <= num < 11.00:
+                data.iloc[rowCount, 2] = '10:00 - 10:59'
+            case num if 11.00 <= num < 12.00:
+                data.iloc[rowCount, 2] = '11:00 - 11:59'
+            case num if 12.00 <= num < 13.00:
+                data.iloc[rowCount, 2] = '12:00 - 12:59'
+            case num if 13.00 <= num < 14.00:
+                data.iloc[rowCount, 2] = '13:00 - 13:59'
+            case num if 14.00 <= num < 15.00:
+                data.iloc[rowCount, 2] = '14:00 - 14:59'
+            case num if 15.00 <= num < 16.00:
+                data.iloc[rowCount, 2] = '15:00 - 15:59'
+            case num if 16.00 <= num < 17.00:
+                data.iloc[rowCount, 2] = '16:00 - 16:59'
+            case num if 17.00 <= num < 18.00:
+                data.iloc[rowCount, 2] = '17:00 - 17:59'
+            case num if 18.00 <= num < 19.00:
+                data.iloc[rowCount, 2] = '18:00 - 18:59'
+            case num if 19.00 <= num < 20.00:
+                data.iloc[rowCount, 2] = '19:00 - 19:59'
+            case num if 20.00 <= num < 21.00:
+                data.iloc[rowCount, 2] = '20:00 - 20:59'
+            case num if 21.00 <= num < 22.00:
+                data.iloc[rowCount, 2] = '21:00 - 21:59'
+            case num if 22.00 <= num < 23.00:
+                data.iloc[rowCount, 2] = '22:00 - 22:59'
+            case num if 23.00 <= num <= 24.00:
+                data.iloc[rowCount, 2] = '23:00 - 24:00'
+            case _:
+                print("Error")
+
+        rowCount += 1
+
+    return data
+
+
+"""
+
+"""
+def makeBarGraph(data, xlabel, ylabel, date):
+    if xlabel == 'CRASH TIME':
+        data = simplifyTime(data)
+
+    df = pd.DataFrame(data)
+
+    # Figure Size
+    fig, ax = plt.subplots(figsize=(16, 9))
+
+    # Remove axes splines
+    for s in ['top', 'bottom', 'left', 'right']:
+        ax.spines[s].set_visible(False)
+
+    # Add padding between axes and labels
+    ax.xaxis.set_tick_params(pad=5)
+    ax.yaxis.set_tick_params(pad=10)
+
+    # Add x, y gridlines
+    ax.grid(visible=True, color='black',
+            linestyle='-.', linewidth=0.5,
+            alpha=0.2)
+
+    # Show top values
+    ax.invert_yaxis()
+
+    x_values = df[xlabel]
+    y_values = df[ylabel]
+
+    plt.barh(x_values, y_values)
+
+    plt.xlabel(ylabel)
+    plt.ylabel(xlabel)
+    plt.title('Car Accident Info for ' + date)
+    # plt.savefig('Car_Accident_Info_' + date + '.png')
+
+    plt.show()
     return
 
 """
 
 """
-def compareGraphs(data1, data2):
+def compareGraphs(data1, data2, xlabel, ylabel, date1, date2):
     return
+
+
+"""
+
+
+returns: a dictionary - (type of accident, number of occurrences)
+"""
+def accidentByVehicle(data):
+    vehicles = dict()
+
+    for row in data.iterrows():
+        row = row[1]
+        for x in range(25, 30):
+            key = row[x]
+            if key is np.NaN:
+                break
+            if key in vehicles.keys():
+                vehicles[key] += 1
+            else:
+                vehicles[key] = 1
+
+    return vehicles
+
+
+"""
+
+"""
+def dictToDataFrame(dictionary, col1, col2):
+    newDF = pd.DataFrame(dictionary.items(), columns=[col1, col2])
+    return newDF
+
 
 """
 
@@ -29,8 +168,13 @@ def main():
     try:
         csv_filename = sys.argv[1]
     except:
-        print("Usage: main.py [filename.csv]")
+        print("Usage: bar_graphs.py [filename.csv]")
         return
+
+    data = pd.read_csv(csv_filename)
+
+    accidentData = dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents')
+    makeBarGraph(accidentData, 'Vehicles', 'Number of Accidents', 'August 2021')
 
 
 # Press the green button in the gutter to run the script.
