@@ -82,7 +82,7 @@ def cleanData(data):
 
 """
 def createCVS(data, month, year):
-    data.to_csv("cvs/Motor_Vehicle_Collisions_" + month + "_" + year + ".csv")
+    data.to_csv("csv/Motor_Vehicle_Collisions_" + month + "_" + year + ".csv")
 
 
 """
@@ -92,13 +92,13 @@ def main():
     try:
         csv_filename = sys.argv[1]
     except:
-        print("Usage: data_cleaning.py [filename.csv]")
+        print("Usage: data_cleaning.py filename.csv")
         return
     data = pd.read_csv(csv_filename)
-    year2021 = getMonthData(data, "8", "2021")
+    year2021 = getMonthData(data, "4", "2021")
     year2021 = cleanData(year2021)
     print(year2021)
-    createCVS(year2021, "August", "2021")
+    createCVS(year2021, "April", "2021")
 
 
 # Press the green button in the gutter to run the script.

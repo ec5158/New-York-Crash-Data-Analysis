@@ -124,10 +124,26 @@ def makeBarGraph(data, xlabel, ylabel, date):
     plt.show()
     return
 
+
+"""
+This function takes a column from one DataFrame and appends it to another DataFrame
+    
+parameters: data1 - the DataFrame the column will be added to
+            data2 - the DataFrame the column of data will be extracted from
+            col   - the name of the column from data2
+returns: the first DataFrame will the extra column added on to it
+"""
+def combineData(data1, data2, col, date1, date2):
+    extra_col = data2[col]
+    return data1.join(extra_col, how='left', lsuffix=date1, rsuffix=date2)
+
+
 """
 
 """
 def compareGraphs(data1, data2, xlabel, ylabel, date1, date2):
+    # TODO
+    data1.plot(x=xlabel, y=["Age", "Height(in cm)"], kind="bar")
     return
 
 
@@ -166,15 +182,23 @@ def dictToDataFrame(dictionary, col1, col2):
 """
 def main():
     try:
-        csv_filename = sys.argv[1]
+        csv_filename1 = sys.argv[1]
     except:
-        print("Usage: bar_graphs.py [filename.csv]")
+        print("Usage: bar_graphs.py filename1.csv [filename2.csv]")
         return
 
-    data = pd.read_csv(csv_filename)
+    data1 = pd.read_csv(csv_filename1)
 
-    accidentData = dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents')
-    makeBarGraph(accidentData, 'Vehicles', 'Number of Accidents', 'August 2021')
+    if len(sys.argv) > 2:
+        csv_filename2 = sys.argv[2]
+        data2 = pd.read_csv(csv_filename2)
+        accidentData = dictToDataFrame(accidentByVehicle(data1), 'Vehicles', 'Number of Accidents')
+        accidentData2 = dictToDataFrame(accidentByVehicle(data2), 'Vehicles', 'Number of Accidents')
+        graphableData = combineData(accidentData, accidentData2, 'Number of Accidents', ' April 2021', ' August 2021')
+        print(graphableData.to_string())
+    else:
+        accidentData = dictToDataFrame(accidentByVehicle(data1), 'Vehicles', 'Number of Accidents')
+        makeBarGraph(accidentData, 'Vehicles', 'Number of Accidents', 'August 2021')
 
 
 # Press the green button in the gutter to run the script.
