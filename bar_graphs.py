@@ -122,7 +122,6 @@ def makeBarGraph(data, xlabel, ylabel, date):
     # plt.savefig('Car_Accident_Info_' + date + '.png')
 
     plt.show()
-    return
 
 
 """
@@ -141,10 +140,14 @@ def combineData(data1, data2, col, date1, date2):
 """
 
 """
-def compareGraphs(data1, data2, xlabel, ylabel, date1, date2):
-    # TODO
-    data1.plot(x=xlabel, y=["Age", "Height(in cm)"], kind="bar")
-    return
+def compareGraphs(data, xlabel, ylabel, date1, date2):
+    data.plot(x=xlabel, y=[date1, date2], kind="bar")
+    plt.xlabel(ylabel)
+    plt.ylabel(xlabel)
+    plt.title('Car Accident Info for ' + date1 + ' and ' + date2)
+    # plt.savefig('Car_Accident_Info_' + date + '.png')
+
+    plt.show()
 
 
 """
@@ -153,6 +156,8 @@ def compareGraphs(data1, data2, xlabel, ylabel, date1, date2):
 returns: a dictionary - (type of accident, number of occurrences)
 """
 def accidentByVehicle(data):
+    # TODO add way to simplify vehicle names
+    # Issue is too many different vehicles leads to unreadable data
     vehicles = dict()
 
     for row in data.iterrows():
@@ -196,6 +201,7 @@ def main():
         accidentData2 = dictToDataFrame(accidentByVehicle(data2), 'Vehicles', 'Number of Accidents')
         graphableData = combineData(accidentData, accidentData2, 'Number of Accidents', ' April 2021', ' August 2021')
         print(graphableData.to_string())
+        #compareGraphs(graphableData, 'Vehicles', 'Number of Accidents', 'Number of Accidents April 2021', 'Number of Accidents August 2021')
     else:
         accidentData = dictToDataFrame(accidentByVehicle(data1), 'Vehicles', 'Number of Accidents')
         makeBarGraph(accidentData, 'Vehicles', 'Number of Accidents', 'August 2021')
