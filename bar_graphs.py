@@ -141,7 +141,7 @@ def combineData(data1, data2, col, date1, date2):
 
 """
 def compareGraphs(data, xlabel, ylabel, date1, date2):
-    data.plot(x=xlabel, y=[date1, date2], kind="bar")
+    data.plot(x=xlabel, y=[date1, date2], kind="barh")
     plt.xlabel(ylabel)
     plt.ylabel(xlabel)
     plt.title('Car Accident Info for ' + date1 + ' and ' + date2)
@@ -156,20 +156,52 @@ def compareGraphs(data, xlabel, ylabel, date1, date2):
 returns: a dictionary - (type of accident, number of occurrences)
 """
 def accidentByVehicle(data):
-    # TODO add way to simplify vehicle names
-    # Issue is too many different vehicles leads to unreadable data
     vehicles = dict()
 
+    """
+    # First attempt at organizing accidents by vehicle involved
+    # Issues: Too many vehicles listed lead to too many bars in chart thus the chart was unreadable
+    #         Labels for vehicles on csv also inconsistent
     for row in data.iterrows():
         row = row[1]
         for x in range(25, 30):
             key = row[x]
             if key is np.NaN:
                 break
-            if key in vehicles.keys():
-                vehicles[key] += 1
+            if key.capitalize() in vehicles.keys():
+                vehicles[key.capitalize()] += 1
             else:
-                vehicles[key] = 1
+                for vehicle in vehicles.keys():
+                    if key.capitalize() in vehicle:
+                        vehicles[vehicle] += 1
+                        break
+                vehicles[key.capitalize()] = 1
+    """
+
+    for automobile in data_cleaning.vehicles:
+        vehicles[automobile] = 0
+        
+    for row in data.iterrows():
+        row = row[1]
+        for x in range(25, 30):
+            key = row[x]
+            if key is np.NaN:
+                break
+            elif key.capitalize() in vehicles.keys():
+                vehicles[key.capitalize()] += 1
+            else:
+                found = False
+                for vehicle in vehicles.keys():
+                    if key.lower() in vehicle.lower():
+                        vehicles[vehicle] += 1
+                        found = True
+                        break
+                    if vehicle.lower() in key.lower():
+                        vehicles[vehicle] += 1
+                        found = True
+                        break
+                if not found:
+                    vehicles['Other'] += 1
 
     return vehicles
 
@@ -201,7 +233,7 @@ def main():
         accidentData2 = dictToDataFrame(accidentByVehicle(data2), 'Vehicles', 'Number of Accidents')
         graphableData = combineData(accidentData, accidentData2, 'Number of Accidents', ' April 2021', ' August 2021')
         print(graphableData.to_string())
-        #compareGraphs(graphableData, 'Vehicles', 'Number of Accidents', 'Number of Accidents April 2021', 'Number of Accidents August 2021')
+        compareGraphs(graphableData, 'Vehicles', 'Number of Accidents', 'Number of Accidents April 2021', 'Number of Accidents August 2021')
     else:
         accidentData = dictToDataFrame(accidentByVehicle(data1), 'Vehicles', 'Number of Accidents')
         makeBarGraph(accidentData, 'Vehicles', 'Number of Accidents', 'August 2021')
