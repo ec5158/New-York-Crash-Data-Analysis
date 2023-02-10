@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+from datetime import datetime
 
 # The columns for the crash data
 columns = ["ID", "CRASH DATE", "CRASH TIME", "BOROUGH", "ZIP CODE", "LATITUDE", "LONGITUDE", "LOCATION",
@@ -29,6 +30,7 @@ time_spans = ['0:00 - 0:59', '1:00 - 1:59', '2:00 - 2:59', '3:00 - 3:59', '4:00 
 vehicles_categories = ['Sedan', 'Bus', 'Truck', 'Ambulance', 'Bike', 'Station wagon/sport utility vehicle',
                        'Ambulance', 'Van', 'Taxi', 'E-scooter/E-bike', 'Convertible', 'Motorcycle', 'Other']
 
+
 """
 This function takes a column from one DataFrame and appends it to another DataFrame
 
@@ -39,7 +41,7 @@ returns: the first DataFrame will the extra column added on to it
 """
 def combineData(data1, data2, col, date1, date2):
     extra_col = data2[col]
-    return data1.join(extra_col, how='left', lsuffix=date1, rsuffix=date2)
+    return data1.join(extra_col, how='left', lsuffix=' '+date1, rsuffix=' '+date2)
 
 
 """
@@ -109,6 +111,14 @@ def accidentByVehicle(data):
 
     return vehicles
 
+
+"""
+
+"""
+def getAccidentDataFrame(data):
+    return dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents')
+
+
 """
 
 """
@@ -135,7 +145,7 @@ def getMonthData(data, month, year):
         crashDate = row[1][0]
         dataAspects = crashDate.split("/")
         if dataAspects[0] != "CRASH DATE":
-            if dataAspects[0] == month and dataAspects[2] == year:
+            if int(dataAspects[0]) == month and dataAspects[2] == year:
                 rowList.append(row[1])
 
     return pd.DataFrame.from_records(rowList)
@@ -247,16 +257,23 @@ def createCVS(data, month, year):
 
 """
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: data_cleaning.py filename.csv")
+    if len(sys.argv) < 4:
+        print("Usage: data_cleaning.py filename.csv month year")
         return
 
     csv_filename = sys.argv[1]
+    month = sys.argv[2]
+    month_num = datetime.strptime(month, '%B').month
+    year = sys.argv[3]
     data = pd.read_csv(csv_filename)
-    year2021 = getMonthData(data, "4", "2021")
-    year2021 = cleanData(year2021)
-    # print(year2021)
-    createCVS(year2021, "April", "2021")
+    created_data = getMonthData(data, month_num, year)
+    created_data = cleanData(created_data)
+
+    # Used to double-check the values and data seem accurate before going into the
+    #  process of converting it into a CVS
+    # print(created_data)
+
+    createCVS(created_data, month, year)
 
 
 # Press the green button in the gutter to run the script.

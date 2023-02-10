@@ -1,7 +1,6 @@
 # Filename: bar_graphs.py
 # Desc:
 #
-# TODO: Clean up bar_graphs.py, make it more flexible for different months and csv files
 # @Author: Eric Chen
 # @Date: 2023-01-11
 #
@@ -10,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import data_cleaning
+import re
 
 
 """
@@ -57,7 +57,7 @@ def makeBarGraph(data, xlabel, ylabel, date):
 
 """
 def compareGraphs(data, xlabel, ylabel, date1, date2):
-    data.plot(x=xlabel, y=[date1, date2], kind="barh")
+    data.plot(x=xlabel, y=[ylabel + ' ' + date1, ylabel + ' ' + date2], kind="barh")
     plt.xlabel(ylabel)
     plt.ylabel(xlabel)
     plt.title('Car Accident Info for ' + date1 + ' and ' + date2)
@@ -76,18 +76,22 @@ def main():
 
     csv_filename1 = sys.argv[1]
     data1 = pd.read_csv(csv_filename1)
+    # File name should follow the format Motor_Vehicle_Collisions_[Month]_[Year].csv
+    #  in order for this to work
+    date1 = csv_filename1.split("_")[3] + " " + re.split('[._]', csv_filename1)[4]
 
     if len(sys.argv) > 2:
         csv_filename2 = sys.argv[2]
         data2 = pd.read_csv(csv_filename2)
-        accidentData = data_cleaning.dictToDataFrame(data_cleaning.accidentByVehicle(data1), 'Vehicles', 'Number of Accidents')
-        accidentData2 = data_cleaning.dictToDataFrame(data_cleaning.accidentByVehicle(data2), 'Vehicles', 'Number of Accidents')
-        graphableData = data_cleaning.combineData(accidentData, accidentData2, 'Number of Accidents', ' April 2021', ' August 2021')
+        date2 = csv_filename2.split("_")[3] + " " + re.split('[._]', csv_filename2)[4]
+        accidentData = data_cleaning.getAccidentDataFrame(data1)
+        accidentData2 = data_cleaning.getAccidentDataFrame(data2)
+        graphableData = data_cleaning.combineData(accidentData, accidentData2, 'Number of Accidents', date1, date2)
         print(graphableData.to_string())
-        compareGraphs(graphableData, 'Vehicles', 'Number of Accidents', 'Number of Accidents April 2021', 'Number of Accidents August 2021')
+        compareGraphs(graphableData, 'Vehicles', 'Number of Accidents', date1, date2)
     else:
-        accidentData = data_cleaning.dictToDataFrame(data_cleaning.accidentByVehicle(data1), 'Vehicles', 'Number of Accidents')
-        makeBarGraph(accidentData, 'Vehicles', 'Number of Accidents', 'August 2021')
+        accidentData = data_cleaning.getAccidentDataFrame(data1)
+        makeBarGraph(accidentData, 'Vehicles', 'Number of Accidents', date1)
 
 
 # Press the green button in the gutter to run the script.
