@@ -6,6 +6,7 @@
 # @Date: 2023-01-11
 #
 
+import math
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -27,7 +28,7 @@ time_spans = ['0:00 - 0:59', '1:00 - 1:59', '2:00 - 2:59', '3:00 - 3:59', '4:00 
               '13:00 - 13:59', '14:00 - 14:59', '15:00 - 15:59', '16:00 - 16:59', '17:00 - 17:59', '18:00 - 18:59',
               '19:00 - 19:59', '20:00 - 20:59', '21:00 - 21:59', '22:00 - 22:59', '23:00 - 24:00']
 
-vehicles_categories = ['Sedan', 'Bus', 'Truck', 'Ambulance', 'Bike', 'Station wagon/sport utility vehicle',
+vehicles_categories = ['Sedan', 'Bus', 'Truck', 'Ambulance', 'Bike', 'Station wagon/Sport Utility Vehicle',
                        'Ambulance', 'Van', 'Taxi', 'E-scooter/E-bike', 'Convertible', 'Motorcycle', 'Other']
 
 
@@ -60,30 +61,10 @@ returns: a dictionary - (type of accident, number of occurrences)
 
 
 def accidentByVehicle(data):
-    vehicles = dict()
-    """
-    # First attempt at organizing accidents by vehicle involved
-    # Issues: Too many vehicles listed lead to too many bars in chart thus the chart was unreadable
-    #         Labels for vehicles on csv also inconsistent
-    # Could use again if data cleaning on vehicle categories done on data before using this method
-    for row in data.iterrows():
-        row = row[1]
-        for x in range(25, 30):
-            key = row[x]
-            if key is np.NaN:
-                break
-            if key.capitalize() in vehicles.keys():
-                vehicles[key.capitalize()] += 1
-            else:
-                for vehicle in vehicles.keys():
-                    if key.capitalize() in vehicle:
-                        vehicles[vehicle] += 1
-                        break
-                vehicles[key.capitalize()] = 1
-    """
+    data = simplifyVehicles(data)
 
-    # TODO: Maybe create method that cleans the data in csv first before calling this method?
-    # Also maybe move this to data_cleaning.py
+    vehicles = dict()
+
     for automobile in vehicles_categories:
         vehicles[automobile] = 0
 
@@ -93,21 +74,10 @@ def accidentByVehicle(data):
             key = row[x]
             if key is np.NaN:
                 break
-            elif key.capitalize() in vehicles.keys():
-                vehicles[key.capitalize()] += 1
+            elif key in vehicles.keys():
+                vehicles[key] += 1
             else:
-                found = False
-                for vehicle in vehicles.keys():
-                    if key.lower() in vehicle.lower():
-                        vehicles[vehicle] += 1
-                        found = True
-                        break
-                    if vehicle.lower() in key.lower():
-                        vehicles[vehicle] += 1
-                        found = True
-                        break
-                if not found:
-                    vehicles['Other'] += 1
+                vehicles['Other'] += 1
 
     return vehicles
 
@@ -167,58 +137,41 @@ def simplifyTime(data):
     for row in data.iterrows():
         row = row[1]
 
-        match timeToNum(row[2]):
-            case num if num < 1.00:
-                data.iloc[rowCount, 2] = '0:00 - 0:59'
-            case num if 1.00 <= num < 2.00:
-                data.iloc[rowCount, 2] = '1:00 - 1:59'
-            case num if 2.00 <= num < 3.00:
-                data.iloc[rowCount, 2] = '2:00 - 2:59'
-            case num if 3.00 <= num < 4.00:
-                data.iloc[rowCount, 2] = '3:00 - 3:59'
-            case num if 4.00 <= num < 5.00:
-                data.iloc[rowCount, 2] = '4:00 - 4:59'
-            case num if 5.00 <= num < 6.00:
-                data.iloc[rowCount, 2] = '5:00 - 5:59'
-            case num if 6.00 <= num < 7.00:
-                data.iloc[rowCount, 2] = '6:00 - 6:59'
-            case num if 7.00 <= num < 8.00:
-                data.iloc[rowCount, 2] = '7:00 - 7:59'
-            case num if 8.00 <= num < 9.00:
-                data.iloc[rowCount, 2] = '8:00 - 8:59'
-            case num if 9.00 <= num < 10.00:
-                data.iloc[rowCount, 2] = '9:00 - 9:59'
-            case num if 10.00 <= num < 11.00:
-                data.iloc[rowCount, 2] = '10:00 - 10:59'
-            case num if 11.00 <= num < 12.00:
-                data.iloc[rowCount, 2] = '11:00 - 11:59'
-            case num if 12.00 <= num < 13.00:
-                data.iloc[rowCount, 2] = '12:00 - 12:59'
-            case num if 13.00 <= num < 14.00:
-                data.iloc[rowCount, 2] = '13:00 - 13:59'
-            case num if 14.00 <= num < 15.00:
-                data.iloc[rowCount, 2] = '14:00 - 14:59'
-            case num if 15.00 <= num < 16.00:
-                data.iloc[rowCount, 2] = '15:00 - 15:59'
-            case num if 16.00 <= num < 17.00:
-                data.iloc[rowCount, 2] = '16:00 - 16:59'
-            case num if 17.00 <= num < 18.00:
-                data.iloc[rowCount, 2] = '17:00 - 17:59'
-            case num if 18.00 <= num < 19.00:
-                data.iloc[rowCount, 2] = '18:00 - 18:59'
-            case num if 19.00 <= num < 20.00:
-                data.iloc[rowCount, 2] = '19:00 - 19:59'
-            case num if 20.00 <= num < 21.00:
-                data.iloc[rowCount, 2] = '20:00 - 20:59'
-            case num if 21.00 <= num < 22.00:
-                data.iloc[rowCount, 2] = '21:00 - 21:59'
-            case num if 22.00 <= num < 23.00:
-                data.iloc[rowCount, 2] = '22:00 - 22:59'
-            case num if 23.00 <= num <= 24.00:
-                data.iloc[rowCount, 2] = '23:00 - 24:00'
-            case _:
-                print("Error")
+        intTime = timeToNum(row[2])
+        hrTime = str(math.floor(intTime))
+        data.iloc[rowCount, 2] = hrTime + ':00' + ' - ' + hrTime + ':59'
 
+        rowCount += 1
+
+    return data
+
+
+"""
+
+"""
+def simplifyVehicles(data):
+    rowCount = 0
+    for row in data.iterrows():
+        row = row[1]
+        for x in range(25, 30):
+            key = row[x]
+            if key is np.NaN:
+                break
+            elif key.capitalize() in vehicles_categories:
+                data.iloc[rowCount, x] = key.capitalize()
+            else:
+                found = False
+                for vehicle in vehicles_categories:
+                    if key.lower() in vehicle.lower():
+                        data.iloc[rowCount, x] = vehicle
+                        found = True
+                        break
+                    if vehicle.lower() in key.lower():
+                        data.iloc[rowCount, x] = vehicle
+                        found = True
+                        break
+                if not found:
+                    data.iloc[rowCount, x] = 'Other'
         rowCount += 1
 
     return data

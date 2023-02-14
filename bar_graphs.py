@@ -91,6 +91,7 @@ def main():
         compareGraphs(graphableData, 'Vehicles', 'Number of Accidents', date1, date2)
     else:
         accidentData = data_cleaning.getAccidentDataFrame(data1)
+        print(accidentData.to_string())
         makeBarGraph(accidentData, 'Vehicles', 'Number of Accidents', date1)
 
 
