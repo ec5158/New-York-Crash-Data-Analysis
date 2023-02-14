@@ -3,8 +3,12 @@
 ## Description
 This program takes data about crashes in NYC and visualizes how the number of crashes and area where crashes occurred changed due to COVID-19. This is a rewrite of an older RIT data mining school project I participated in.
 
+The data and CSV files used for this project come from the [NYC OpenData Website](https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95).
+
 ## Instructions
-``` ./main [filename.csv] ``` Starts the program with the given CVS file
+``` ./data_cleaning filename.csv month year ``` Starts the program with the given CSV file and creates a new CSV file of only the data falling on the inputted month and year. The CSV file should be from the [NYC OpenData Website](https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95) for this program to work.
+
+``` bar_graphs.py filename1.csv [filename2.csv] ``` Creates a bar chart of the number of accidents that occurred in the given CSV file and sorts them by vehicle. [filename2.csv] is optional and inputting a second CSV file creates a double bar graph of both CSV files to compare vehicle accidents by month and year.
 
 ## Progress
 - [X] Program can read in CSV file
