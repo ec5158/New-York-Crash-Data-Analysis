@@ -16,32 +16,8 @@ import re
 
 """
 def makeBarGraph(data, xlabel, ylabel, date):
-    if xlabel == 'CRASH TIME':
-        data = data_cleaning.simplifyTime(data)
-
-    df = pd.DataFrame(data)
-
-    # Figure Size
-    fig, ax = plt.subplots(figsize=(16, 9))
-
-    # Remove axes splines
-    for s in ['top', 'bottom', 'left', 'right']:
-        ax.spines[s].set_visible(False)
-
-    # Add padding between axes and labels
-    ax.xaxis.set_tick_params(pad=5)
-    ax.yaxis.set_tick_params(pad=10)
-
-    # Add x, y gridlines
-    ax.grid(visible=True, color='black',
-            linestyle='-.', linewidth=0.5,
-            alpha=0.2)
-
-    # Show top values
-    ax.invert_yaxis()
-
-    x_values = df[xlabel]
-    y_values = df[ylabel]
+    x_values = data[xlabel]
+    y_values = data[ylabel]
 
     plt.barh(x_values, y_values)
 
@@ -70,8 +46,8 @@ def compareGraphs(data, xlabel, ylabel, date1, date2):
 
 """
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: bar_graphs.py filename1.csv [filename2.csv]")
+    if len(sys.argv) < 3:
+        print("Usage: bar_graphs.py filename1.csv [filename2.csv] x-label")
         return
 
     csv_filename1 = sys.argv[1]
@@ -80,19 +56,38 @@ def main():
     #  in order for this to work
     date1 = csv_filename1.split("_")[3] + " " + re.split('[._]', csv_filename1)[4]
 
-    if len(sys.argv) > 2:
-        csv_filename2 = sys.argv[2]
+    next = sys.argv[2]
+    csv_filename2 = " "
+
+    if next[len(next) - 4:] == ".csv":
+        csv_filename2 = next
+        xlabel = sys.argv[3]
+    else:
+        xlabel = next
+
+    # These are the acceptable data to look for when making the bar graphs
+    # More will be added later
+    acceptable_options = ['Vehicles', 'CRASH_TIME']
+    if xlabel not in acceptable_options:
+        print("Current x-label is unusable for graphing. Try 'Vehicles' or 'CRASH_TIME' instead.")
+        return
+
+    xlabel = xlabel.replace("_", " ")
+
+    if csv_filename2 != " ":
         data2 = pd.read_csv(csv_filename2)
         date2 = csv_filename2.split("_")[3] + " " + re.split('[._]', csv_filename2)[4]
-        accidentData = data_cleaning.getAccidentDataFrame(data1)
-        accidentData2 = data_cleaning.getAccidentDataFrame(data2)
+
+        accidentData = data_cleaning.getAccidentDataFrame(data1, xlabel)
+        accidentData2 = data_cleaning.getAccidentDataFrame(data2, xlabel)
         graphableData = data_cleaning.combineData(accidentData, accidentData2, 'Number of Accidents', date1, date2)
         print(graphableData.to_string())
-        compareGraphs(graphableData, 'Vehicles', 'Number of Accidents', date1, date2)
+        compareGraphs(graphableData, xlabel, 'Number of Accidents', date1, date2)
     else:
-        accidentData = data_cleaning.getAccidentDataFrame(data1)
+        accidentData = data_cleaning.getAccidentDataFrame(data1, xlabel)
         print(accidentData.to_string())
-        makeBarGraph(accidentData, 'Vehicles', 'Number of Accidents', date1)
+        makeBarGraph(accidentData, xlabel, 'Number of Accidents', date1)
+
 
 
 # Press the green button in the gutter to run the script.

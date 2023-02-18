@@ -16,7 +16,8 @@ import re
 """
 def one_hot_code(data, filename):
     # List of category headers
-    categories = ["2", "18", "19", "24", "25", "26"]
+    categories = ["BOROUGH", "CONTRIBUTING FACTOR VEHICLE 1", "CONTRIBUTING FACTOR VEHICLE 2", "VEHICLE TYPE CODE 1",
+                  "VEHICLE TYPE CODE 2", "VEHICLE TYPE CODE 3"]
     # List of labels for the new one hot coded columns
     labels = ["Borough", "Contributing_Factor_Vehicle1", "Contributing_Factor_Vehicle2", "Vehicle_Type1",
               "Vehicle_Type2", "Vehicle_Type3"]
@@ -26,10 +27,10 @@ def one_hot_code(data, filename):
     one_hot_coded = pd.get_dummies(data, columns=categories, prefix=labels)
 
     # Creates a separate CSV file of the one hot coded data
-    one_hot_coded.to_csv("Updated_" + filename)
+    one_hot_coded.to_csv(filename[:len(filename) - 4] + "_Updated.csv")
 
     # Prints out the one hot coded data
-    print(one_hot_coded)
+    print(one_hot_coded.to_string())
 
 
 """

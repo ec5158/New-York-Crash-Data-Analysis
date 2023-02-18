@@ -26,7 +26,7 @@ columns = ["ID", "CRASH DATE", "CRASH TIME", "BOROUGH", "ZIP CODE", "LATITUDE", 
 time_spans = ['0:00 - 0:59', '1:00 - 1:59', '2:00 - 2:59', '3:00 - 3:59', '4:00 - 4:59', '5:00 - 5:59', '6:00 - 6:59',
               '7:00 - 7:59', '8:00 - 8:59', '9:00 - 9:59', '10:00 - 10:59', '11:00 - 11:59', '12:00 - 12:59',
               '13:00 - 13:59', '14:00 - 14:59', '15:00 - 15:59', '16:00 - 16:59', '17:00 - 17:59', '18:00 - 18:59',
-              '19:00 - 19:59', '20:00 - 20:59', '21:00 - 21:59', '22:00 - 22:59', '23:00 - 24:00']
+              '19:00 - 19:59', '20:00 - 20:59', '21:00 - 21:59', '22:00 - 22:59', '23:00 - 23:59']
 
 vehicles_categories = ['Sedan', 'Bus', 'Truck', 'Ambulance', 'Bike', 'Station wagon/Sport Utility Vehicle',
                        'Ambulance', 'Van', 'Taxi', 'E-scooter/E-bike', 'Convertible', 'Motorcycle', 'Other']
@@ -58,8 +58,6 @@ def dictToDataFrame(dictionary, col1, col2):
 
 returns: a dictionary - (type of accident, number of occurrences)
 """
-
-
 def accidentByVehicle(data):
     data = simplifyVehicles(data)
 
@@ -81,12 +79,41 @@ def accidentByVehicle(data):
 
     return vehicles
 
+"""
+
+
+returns: a dictionary - (type of accident, number of occurrences)
+"""
+def accidentByTime(data):
+    data = simplifyTime(data)
+
+    times = dict()
+
+    for spans in time_spans:
+        times[spans] = 0
+
+    for row in data.iterrows():
+        row = row[1]
+
+        key = row[2]
+        if key is np.NaN:
+            break
+        elif key in times.keys():
+            times[key] += 1
+        else:
+            print("Error: " + key + " is not a valid time.")
+
+    return times
+
 
 """
 
 """
-def getAccidentDataFrame(data):
-    return dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents')
+def getAccidentDataFrame(data, xlabel):
+    if xlabel == 'Vehicles':
+        return dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents')
+    if xlabel == 'CRASH TIME':
+        return dictToDataFrame(accidentByTime(data), 'CRASH TIME', 'Number of Accidents')
 
 
 """
