@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import util_functions as uf
 from datetime import datetime
 
 # The columns for the crash data
@@ -33,130 +34,6 @@ vehicles_categories = ['Sedan', 'Bus', 'Truck', 'Ambulance', 'Bike', 'Station wa
 
 
 """
-This function takes a column from one DataFrame and appends it to another DataFrame
-
-parameters: data1 - the DataFrame the column will be added to
-            data2 - the DataFrame the column of data will be extracted from
-            col   - the name of the column from data2
-returns: the first DataFrame will the extra column added on to it
-"""
-def combineData(data1, data2, col, date1, date2):
-    extra_col = data2[col]
-    return data1.join(extra_col, how='left', lsuffix=' '+date1, rsuffix=' '+date2)
-
-
-"""
-
-"""
-def dictToDataFrame(dictionary, col1, col2):
-    newDF = pd.DataFrame(dictionary.items(), columns=[col1, col2])
-    return newDF
-
-
-"""
-
-
-returns: a dictionary - (type of accident, number of occurrences)
-"""
-def accidentByVehicle(data):
-    data = simplifyVehicles(data)
-
-    vehicles = dict()
-
-    for automobile in vehicles_categories:
-        vehicles[automobile] = 0
-
-    for row in data.iterrows():
-        row = row[1]
-        for x in range(25, 30):
-            key = row[x]
-            if key is np.NaN:
-                break
-            elif key in vehicles.keys():
-                vehicles[key] += 1
-            else:
-                vehicles['Other'] += 1
-
-    return vehicles
-
-"""
-
-
-returns: a dictionary - (type of accident, number of occurrences)
-"""
-def accidentByTime(data):
-    data = simplifyTime(data)
-
-    times = dict()
-
-    for spans in time_spans:
-        times[spans] = 0
-
-    for row in data.iterrows():
-        row = row[1]
-
-        key = row[2]
-        if key is np.NaN:
-            break
-        elif key in times.keys():
-            times[key] += 1
-        else:
-            print("Error: " + key + " is not a valid time.")
-
-    return times
-
-
-"""
-
-"""
-def getAccidentDataFrame(data, xlabel):
-    if xlabel == 'Vehicles':
-        return dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents')
-    if xlabel == 'CRASH TIME':
-        return dictToDataFrame(accidentByTime(data), 'CRASH TIME', 'Number of Accidents')
-
-
-"""
-
-"""
-def getYearData(data, year):
-    rowList = []
-
-    for row in data.iterrows():
-        crashDate = row[1][0]
-        dataAspects = crashDate.split("/")
-        if dataAspects[0] != "CRASH DATE":
-            if dataAspects[2] == year:
-                rowList.append(row[1])
-
-    return pd.DataFrame.from_records(rowList)
-
-
-"""
-
-"""
-def getMonthData(data, month, year):
-    rowList = []
-
-    for row in data.iterrows():
-        crashDate = row[1][0]
-        dataAspects = crashDate.split("/")
-        if dataAspects[0] != "CRASH DATE":
-            if int(dataAspects[0]) == month and dataAspects[2] == year:
-                rowList.append(row[1])
-
-    return pd.DataFrame.from_records(rowList)
-
-
-"""
-
-"""
-def timeToNum(str_time):
-    nums = str_time.split(':')
-    return float(nums[0]) + (float(nums[1]) / 100.00)
-
-
-"""
 
 """
 def simplifyTime(data):
@@ -164,7 +41,7 @@ def simplifyTime(data):
     for row in data.iterrows():
         row = row[1]
 
-        intTime = timeToNum(row[2])
+        intTime = uf.timeToNum(row[2])
         hrTime = str(math.floor(intTime))
         data.iloc[rowCount, 2] = hrTime + ':00' + ' - ' + hrTime + ':59'
 
@@ -206,6 +83,102 @@ def simplifyVehicles(data):
 
 """
 
+
+returns: a dictionary - (type of accident, number of occurrences)
+"""
+def accidentByVehicle(data):
+    data = simplifyVehicles(data)
+
+    vehicles = dict()
+
+    for automobile in vehicles_categories:
+        vehicles[automobile] = 0
+
+    for row in data.iterrows():
+        row = row[1]
+        for x in range(25, 30):
+            key = row[x]
+            if key is np.NaN:
+                break
+            elif key in vehicles.keys():
+                vehicles[key] += 1
+            else:
+                vehicles['Other'] += 1
+
+    return vehicles
+
+
+"""
+
+
+returns: a dictionary - (time of accident, number of occurrences)
+"""
+def accidentByTime(data):
+    data = simplifyTime(data)
+
+    times = dict()
+
+    for spans in time_spans:
+        times[spans] = 0
+
+    for row in data.iterrows():
+        row = row[1]
+
+        key = row[2]
+        if key is np.NaN:
+            break
+        elif key in times.keys():
+            times[key] += 1
+        else:
+            print("Error: " + key + " is not a valid time.")
+
+    return times
+
+
+"""
+
+"""
+def getAccidentDataFrame(data, xlabel):
+    if xlabel == 'Vehicles':
+        return uf.dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents')
+    if xlabel == 'CRASH TIME':
+        return uf.dictToDataFrame(accidentByTime(data), 'CRASH TIME', 'Number of Accidents')
+
+
+"""
+
+"""
+def getYearData(data, year):
+    rowList = []
+
+    for row in data.iterrows():
+        crashDate = row[1][0]
+        dataAspects = crashDate.split("/")
+        if dataAspects[0] != "CRASH DATE":
+            if dataAspects[2] == year:
+                rowList.append(row[1])
+
+    return pd.DataFrame.from_records(rowList)
+
+
+"""
+
+"""
+def getMonthData(data, month, year):
+    rowList = []
+
+    for row in data.iterrows():
+        crashDate = row[1][0]
+        dataAspects = crashDate.split("/")
+        if dataAspects[0] != "CRASH DATE":
+            if int(dataAspects[0]) == month and dataAspects[2] == year:
+                rowList.append(row[1])
+
+    return pd.DataFrame.from_records(rowList)
+
+
+"""
+
 """
 def cleanData(data):
     rowCount = 0
@@ -229,13 +202,6 @@ def cleanData(data):
 """
 
 """
-def createCVS(data, month, year):
-    data.to_csv("csv/Motor_Vehicle_Collisions_" + month + "_" + year + ".csv")
-
-
-"""
-
-"""
 def main():
     if len(sys.argv) < 4:
         print("Usage: data_cleaning.py filename.csv month year")
@@ -253,7 +219,7 @@ def main():
     #  process of converting it into a CVS
     # print(created_data)
 
-    createCVS(created_data, month, year)
+    uf.createCVS(created_data, month, year)
 
 
 # Press the green button in the gutter to run the script.

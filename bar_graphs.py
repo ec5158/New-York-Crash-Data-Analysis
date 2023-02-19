@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import data_cleaning
+import util_functions as uf
 import re
 
 
@@ -80,14 +81,14 @@ def main():
 
         accidentData = data_cleaning.getAccidentDataFrame(data1, xlabel)
         accidentData2 = data_cleaning.getAccidentDataFrame(data2, xlabel)
-        graphableData = data_cleaning.combineData(accidentData, accidentData2, 'Number of Accidents', date1, date2)
+        graphableData = uf.combineData(accidentData, accidentData2, 'Number of Accidents', date1, date2)
+
         print(graphableData.to_string())
         compareGraphs(graphableData, xlabel, 'Number of Accidents', date1, date2)
     else:
         accidentData = data_cleaning.getAccidentDataFrame(data1, xlabel)
         print(accidentData.to_string())
         makeBarGraph(accidentData, xlabel, 'Number of Accidents', date1)
-
 
 
 # Press the green button in the gutter to run the script.
