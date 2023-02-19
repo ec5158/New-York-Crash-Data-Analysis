@@ -68,12 +68,13 @@ def main():
 
     # These are the acceptable data to look for when making the bar graphs
     # More will be added later
-    acceptable_options = ['Vehicles', 'CRASH_TIME']
+    acceptable_options = ['Vehicles', 'Crash_Time', 'Borough']
     if xlabel not in acceptable_options:
-        print("Current x-label is unusable for graphing. Try 'Vehicles' or 'CRASH_TIME' instead.")
+        print("Current x-label is unusable for graphing. Try 'Vehicles', 'Crash_Time', or 'Borough' instead.")
         return
 
     xlabel = xlabel.replace("_", " ")
+    ylabel = 'Number of Accidents'
 
     if csv_filename2 != " ":
         data2 = pd.read_csv(csv_filename2)
@@ -81,14 +82,14 @@ def main():
 
         accidentData = data_cleaning.getAccidentDataFrame(data1, xlabel)
         accidentData2 = data_cleaning.getAccidentDataFrame(data2, xlabel)
-        graphableData = uf.combineData(accidentData, accidentData2, 'Number of Accidents', date1, date2)
+        graphableData = uf.combineData(accidentData, accidentData2, ylabel, date1, date2)
 
         print(graphableData.to_string())
-        compareGraphs(graphableData, xlabel, 'Number of Accidents', date1, date2)
+        compareGraphs(graphableData, xlabel, ylabel, date1, date2)
     else:
         accidentData = data_cleaning.getAccidentDataFrame(data1, xlabel)
         print(accidentData.to_string())
-        makeBarGraph(accidentData, xlabel, 'Number of Accidents', date1)
+        makeBarGraph(accidentData, xlabel, ylabel, date1)
 
 
 # Press the green button in the gutter to run the script.

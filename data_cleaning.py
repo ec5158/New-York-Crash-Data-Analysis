@@ -32,6 +32,7 @@ time_spans = ['0:00 - 0:59', '1:00 - 1:59', '2:00 - 2:59', '3:00 - 3:59', '4:00 
 vehicles_categories = ['Sedan', 'Bus', 'Truck', 'Ambulance', 'Bike', 'Station wagon/Sport Utility Vehicle',
                        'Ambulance', 'Van', 'Taxi', 'E-scooter/E-bike', 'Convertible', 'Motorcycle', 'Other']
 
+boroughs = ['Queens', 'Brooklyn', 'Bronx', 'Manhattan', 'Staten Island', 'Unspecified']
 
 """
 
@@ -95,9 +96,9 @@ def accidentByVehicle(data):
         vehicles[automobile] = 0
 
     for row in data.iterrows():
-        row = row[1]
+        this_row = row[1]
         for x in range(25, 30):
-            key = row[x]
+            key = this_row[x]
             if key is np.NaN:
                 break
             elif key in vehicles.keys():
@@ -122,11 +123,10 @@ def accidentByTime(data):
         times[spans] = 0
 
     for row in data.iterrows():
-        row = row[1]
-
-        key = row[2]
+        this_row = row[1]
+        key = this_row[2]
         if key is np.NaN:
-            break
+            continue
         elif key in times.keys():
             times[key] += 1
         else:
@@ -137,12 +137,38 @@ def accidentByTime(data):
 
 """
 
+
+returns: a dictionary - (time of accident, number of occurrences)
+"""
+def accidentByBorough(data):
+    places = dict()
+
+    for borough in boroughs:
+        places[borough] = 0
+
+    for row in data.iterrows():
+        this_row = row[1]
+        key = this_row[3]
+        if key is np.NaN:
+            places['Unspecified'] += 1
+        elif key.title() in places.keys():
+            places[key.title()] += 1
+        else:
+            print("Error: " + key + " is not a valid borough.")
+
+    return places
+
+
+"""
+
 """
 def getAccidentDataFrame(data, xlabel):
     if xlabel == 'Vehicles':
         return uf.dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents')
-    if xlabel == 'CRASH TIME':
-        return uf.dictToDataFrame(accidentByTime(data), 'CRASH TIME', 'Number of Accidents')
+    if xlabel == 'Crash Time':
+        return uf.dictToDataFrame(accidentByTime(data), 'Crash Time', 'Number of Accidents')
+    if xlabel == 'Borough':
+        return uf.dictToDataFrame(accidentByBorough(data), 'Borough', 'Number of Accidents')
 
 
 """
