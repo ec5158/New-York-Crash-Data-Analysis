@@ -68,9 +68,9 @@ def main():
 
     # These are the acceptable data to look for when making the bar graphs
     # More will be added later
-    acceptable_options = ['Vehicles', 'Crash_Time', 'Borough']
+    acceptable_options = ['Vehicles', 'Crash_Time', 'Borough', 'Factor']
     if xlabel not in acceptable_options:
-        print("Current x-label is unusable for graphing. Try 'Vehicles', 'Crash_Time', or 'Borough' instead.")
+        print("Current x-label is unusable for graphing. Try 'Vehicles', 'Crash_Time', 'Borough', or 'Factor' instead.")
         return
 
     xlabel = xlabel.replace("_", " ")

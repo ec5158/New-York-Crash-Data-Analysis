@@ -34,6 +34,8 @@ vehicles_categories = ['Sedan', 'Bus', 'Truck', 'Ambulance', 'Bike', 'Station wa
 
 boroughs = ['Queens', 'Brooklyn', 'Bronx', 'Manhattan', 'Staten Island', 'Unspecified']
 
+factor_categories = []
+
 """
 
 """
@@ -60,7 +62,7 @@ def simplifyVehicles(data):
         row = row[1]
         for x in range(25, 30):
             key = row[x]
-            if key is np.NaN:
+            if pd.isnull(key):
                 break
             elif key.capitalize() in vehicles_categories:
                 data.iloc[rowCount, x] = key.capitalize()
@@ -99,7 +101,7 @@ def accidentByVehicle(data):
         this_row = row[1]
         for x in range(25, 30):
             key = this_row[x]
-            if key is np.NaN:
+            if pd.isnull(key):
                 break
             elif key in vehicles.keys():
                 vehicles[key] += 1
@@ -125,7 +127,7 @@ def accidentByTime(data):
     for row in data.iterrows():
         this_row = row[1]
         key = this_row[2]
-        if key is np.NaN:
+        if pd.isnull(key):
             continue
         elif key in times.keys():
             times[key] += 1
@@ -138,7 +140,7 @@ def accidentByTime(data):
 """
 
 
-returns: a dictionary - (time of accident, number of occurrences)
+returns: a dictionary - (borough/location of accident, number of occurrences)
 """
 def accidentByBorough(data):
     places = dict()
@@ -149,7 +151,7 @@ def accidentByBorough(data):
     for row in data.iterrows():
         this_row = row[1]
         key = this_row[3]
-        if key is np.NaN:
+        if pd.isnull(key):
             places['Unspecified'] += 1
         elif key.title() in places.keys():
             places[key.title()] += 1
@@ -157,6 +159,28 @@ def accidentByBorough(data):
             print("Error: " + key + " is not a valid borough.")
 
     return places
+
+
+"""
+
+
+returns: a dictionary - (Reasons/Factors contributing to accident, number of occurrences)
+"""
+def accidentByFactor(data):
+    reasons = dict()
+
+    for row in data.iterrows():
+        this_row = row[1]
+        for x in range(19, 23):
+            key = this_row[x]
+            if pd.isnull(key):
+                break
+            if key.title() in reasons.keys():
+                reasons[key.title()] += 1
+            else:
+                reasons[key.title()] = 1
+
+    return reasons
 
 
 """
@@ -169,7 +193,8 @@ def getAccidentDataFrame(data, xlabel):
         return uf.dictToDataFrame(accidentByTime(data), 'Crash Time', 'Number of Accidents')
     if xlabel == 'Borough':
         return uf.dictToDataFrame(accidentByBorough(data), 'Borough', 'Number of Accidents')
-
+    if xlabel == 'Factor':
+        return uf.dictToDataFrame(accidentByFactor(data), 'Factor', 'Number of Accidents')
 
 """
 
