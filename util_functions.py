@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-from datetime import datetime
+import datetime
 
 """
 This function takes a column from one DataFrame and appends it to another DataFrame
@@ -41,6 +41,15 @@ def dictToDataFrame(dictionary, col1, col2):
 def timeToNum(str_time):
     nums = str_time.split(':')
     return float(nums[0]) + (float(nums[1]) / 100.00)
+
+
+"""
+
+"""
+def dateToWeekDay(date):
+    month, day, year = (int(x) for x in date.split('/'))
+    weekday = datetime.date(year, month, day)
+    return weekday.strftime("%A")
 
 
 """

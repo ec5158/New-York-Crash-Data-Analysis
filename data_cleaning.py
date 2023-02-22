@@ -34,7 +34,7 @@ vehicles_categories = ['Sedan', 'Bus', 'Truck', 'Ambulance', 'Bike', 'Station wa
 
 boroughs = ['Queens', 'Brooklyn', 'Bronx', 'Manhattan', 'Staten Island', 'Unspecified']
 
-factor_categories = []
+days_of_the_week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 """
 
@@ -185,6 +185,28 @@ def accidentByFactor(data):
 
 """
 
+
+returns: a dictionary - (Reasons/Factors contributing to accident, number of occurrences)
+"""
+def accidentByWeekDay(data):
+    days = dict()
+
+    for week_day in days_of_the_week:
+        days[week_day] = 0
+
+    for row in data.iterrows():
+        this_row = row[1]
+        key = this_row[1]
+        if pd.isnull(key):
+            break
+        this_day = uf.dateToWeekDay(key)
+        days[this_day] += 1
+
+    return days
+
+
+"""
+
 """
 def getAccidentDataFrame(data, xlabel):
     if xlabel == 'Vehicles':
@@ -195,6 +217,9 @@ def getAccidentDataFrame(data, xlabel):
         return uf.dictToDataFrame(accidentByBorough(data), 'Borough', 'Number of Accidents')
     if xlabel == 'Factor':
         return uf.dictToDataFrame(accidentByFactor(data), 'Factor', 'Number of Accidents')
+    if xlabel == 'Week Day':
+        return uf.dictToDataFrame(accidentByWeekDay(data), 'Week Day', 'Number of Accidents')
+
 
 """
 
