@@ -36,6 +36,9 @@ boroughs = ['Queens', 'Brooklyn', 'Bronx', 'Manhattan', 'Staten Island', 'Unspec
 
 days_of_the_week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
+months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
+          'November','December']
+
 """
 
 """
@@ -279,16 +282,30 @@ def cleanData(data):
 
 """
 def main():
-    if len(sys.argv) < 4:
-        print("Usage: data_cleaning.py filename.csv month year")
+    if len(sys.argv) < 3:
+        print("Usage: data_cleaning.py filename.csv [month] year")
         return
 
     csv_filename = sys.argv[1]
-    month = sys.argv[2]
-    month_num = datetime.strptime(month, '%B').month
-    year = sys.argv[3]
+    month_num = 0
+    month = ""
+    has_month = False
+
+    if sys.argv[2].title() in months:
+        month = sys.argv[2].title()
+        month_num = datetime.strptime(month, '%B').month
+        year = sys.argv[3]
+        has_month = True
+    else:
+        year = sys.argv[2]
+
     data = pd.read_csv(csv_filename)
-    created_data = getMonthData(data, month_num, year)
+
+    if has_month:
+        created_data = getMonthData(data, month_num, year)
+    else:
+        created_data = getYearData(data, year)
+
     created_data = cleanData(created_data)
 
     # Used to double-check the values and data seem accurate before going into the

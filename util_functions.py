@@ -56,4 +56,7 @@ def dateToWeekDay(date):
 
 """
 def createCVS(data, month, year):
-    data.to_csv("csv/Motor_Vehicle_Collisions_" + month + "_" + year + ".csv")
+    if month == "":
+        data.to_csv("csv/Motor_Vehicle_Collisions_" + year + ".csv")
+    else:
+        data.to_csv("csv/Motor_Vehicle_Collisions_" + month + "_" + year + ".csv")
