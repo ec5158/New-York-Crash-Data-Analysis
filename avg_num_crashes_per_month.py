@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import sys
 import data_cleaning
 import util_functions as uf
+import data_cleaning as dcl
+import bar_graphs as bar
 import re
 
 
@@ -25,12 +27,15 @@ def main():
     data1 = pd.read_csv(csv_filename1)
     # File name should follow the format Motor_Vehicle_Collisions_[Year].csv
     #  in order for this to work
-    year1 = csv_filename1.split("_")[3]
+    year1 = re.split('[._]', csv_filename1)[3]
 
     if len(sys.argv) > 2:
         csv_filename2 = sys.argv[2]
+        data2 = pd.read_csv(csv_filename2)
+        year2 = re.split('[._]', csv_filename2)[3]
 
-    print(year1)
+    accidentData = dcl.getAccidentDataFrame(data1, "Months")
+    bar.makeBarGraph(accidentData, "Months", "Number of Accidents", year1)
 
 
 # Press the green button in the gutter to run the script.

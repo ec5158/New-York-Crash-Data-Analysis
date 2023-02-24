@@ -208,6 +208,31 @@ def accidentByWeekDay(data):
     return days
 
 
+def accidentByMonth(data):
+    """
+
+    :param data:
+    :return:
+    """
+    months_dict = dict()
+
+    for month in months:
+        months_dict[month] = 0
+
+    for row in data.iterrows():
+        this_row = row[1]
+        key = this_row[1]
+        if pd.isnull(key):
+            break
+
+        dataAspects = key.split("/")
+        month_id = months[int(dataAspects[0]) - 1]
+
+        months_dict[month_id] += 1
+
+    return months_dict
+
+
 """
 
 """
@@ -222,6 +247,8 @@ def getAccidentDataFrame(data, xlabel):
         return uf.dictToDataFrame(accidentByFactor(data), 'Factor', 'Number of Accidents')
     if xlabel == 'Week Day':
         return uf.dictToDataFrame(accidentByWeekDay(data), 'Week Day', 'Number of Accidents')
+    if xlabel == 'Months':
+        return uf.dictToDataFrame(accidentByMonth(data), 'Months', 'Number of Accidents')
 
 
 """
