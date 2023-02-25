@@ -339,7 +339,7 @@ def main():
     #  process of converting it into a CVS
     # print(created_data)
 
-    uf.createCVS(created_data, month, year)
+    uf.createCSV(created_data, month, year)
 
 
 # Press the green button in the gutter to run the script.
