@@ -11,19 +11,18 @@ import numpy as np
 import datetime
 
 
-def combineData(data1, data2, col, date1, date2):
+def combineData(data1, data2, col):
     """
     This function takes a column from one DataFrame and appends it to another DataFrame
 
     :param data1: the DataFrame the column will be added to
     :param data2: the DataFrame the column of data will be extracted from
     :param col: the name of the column from data2
-    :param date1: the date (month and year) of the first DataFrame
-    :param date2: the date (month and year) of the second DataFrame
     :return: the first DataFrame will the extra column added on to it
     """
     extra_col = data2[col]
-    return data1.join(extra_col, how='left', lsuffix=' '+date1, rsuffix=' '+date2)
+    data1[col] = extra_col
+    return data1
 
 
 def dictToDataFrame(dictionary, col1, col2):

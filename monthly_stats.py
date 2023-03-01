@@ -18,23 +18,10 @@ def main():
     :return:
     """
     if len(sys.argv) < 3:
-        print("Usage: bar_graphs.py filename1.csv [filename2.csv] x-label")
+        print("Usage: bar_graphs.py <x-label> <filename1.csv> [<filename2.csv>]")
         return
 
-    csv_filename1 = sys.argv[1]
-    data1 = pd.read_csv(csv_filename1)
-    # File name should follow the format Motor_Vehicle_Collisions_[Month]_[Year].csv
-    #  in order for this to work
-    date1 = csv_filename1.split("_")[3] + " " + re.split('[._]', csv_filename1)[4]
-
-    nxt_val = sys.argv[2]
-    csv_filename2 = " "
-
-    if nxt_val[len(nxt_val) - 4:] == ".csv":
-        csv_filename2 = nxt_val
-        xlabel = sys.argv[3]
-    else:
-        xlabel = nxt_val
+    xlabel = sys.argv[1]
 
     # These are the acceptable data to look for when making the bar graphs
     # More will be added later
@@ -46,14 +33,26 @@ def main():
 
     xlabel = xlabel.replace("_", " ")
     ylabel = 'Number of Accidents'
-    accidentData = dcl.getAccidentDataFrame(data1, xlabel)
+
+    csv_filename1 = sys.argv[2]
+    data1 = pd.read_csv(csv_filename1)
+    # File name should follow the format Motor_Vehicle_Collisions_[Month]_[Year].csv
+    #  in order for this to work
+    date1 = csv_filename1.split("_")[3] + " " + re.split('[._]', csv_filename1)[4]
+
+    if len(sys.argv) == 4:
+        csv_filename2 = sys.argv[3]
+    else:
+        csv_filename2 = " "
+
+    accidentData = dcl.getAccidentDataFrame(data1, xlabel, date1)
 
     if csv_filename2 != " ":
         data2 = pd.read_csv(csv_filename2)
         date2 = csv_filename2.split("_")[3] + " " + re.split('[._]', csv_filename2)[4]
 
-        accidentData2 = dcl.getAccidentDataFrame(data2, xlabel)
-        graphableData = uf.combineData(accidentData, accidentData2, ylabel, date1, date2)
+        accidentData2 = dcl.getAccidentDataFrame(data2, xlabel, date2)
+        graphableData = uf.combineData(accidentData, accidentData2, ylabel + ' ' + date2)
 
         print(graphableData.to_string())
         bar.compareGraphs(graphableData, xlabel, ylabel, date1, date2)

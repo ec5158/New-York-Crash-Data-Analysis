@@ -9,7 +9,6 @@
 import math
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import sys
 import util_functions as uf
 from datetime import datetime
@@ -37,12 +36,15 @@ boroughs = ['Queens', 'Brooklyn', 'Bronx', 'Manhattan', 'Staten Island', 'Unspec
 days_of_the_week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
-          'November','December']
+          'November', 'December']
 
-"""
 
-"""
 def simplifyTime(data):
+    """
+
+    :param data:
+    :return:
+    """
     rowCount = 0
     for row in data.iterrows():
         row = row[1]
@@ -56,10 +58,12 @@ def simplifyTime(data):
     return data
 
 
-"""
-
-"""
 def simplifyVehicles(data):
+    """
+
+    :param data:
+    :return:
+    """
     rowCount = 0
     for row in data.iterrows():
         row = row[1]
@@ -87,12 +91,12 @@ def simplifyVehicles(data):
     return data
 
 
-"""
-
-
-returns: a dictionary - (type of accident, number of occurrences)
-"""
 def accidentByVehicle(data):
+    """
+
+    :param data:
+    :return: a dictionary - (vehicles involved in the accident, number of occurrences)
+    """
     data = simplifyVehicles(data)
 
     vehicles = dict()
@@ -114,12 +118,12 @@ def accidentByVehicle(data):
     return vehicles
 
 
-"""
-
-
-returns: a dictionary - (time of accident, number of occurrences)
-"""
 def accidentByTime(data):
+    """
+
+    :param data:
+    :return: a dictionary - (time the accident occurred, number of occurrences)
+    """
     data = simplifyTime(data)
 
     times = dict()
@@ -140,12 +144,12 @@ def accidentByTime(data):
     return times
 
 
-"""
-
-
-returns: a dictionary - (borough/location of accident, number of occurrences)
-"""
 def accidentByBorough(data):
+    """
+
+    :param data:
+    :return: a dictionary - (borough/location of accident, number of occurrences)
+    """
     places = dict()
 
     for borough in boroughs:
@@ -164,12 +168,12 @@ def accidentByBorough(data):
     return places
 
 
-"""
-
-
-returns: a dictionary - (Reasons/Factors contributing to accident, number of occurrences)
-"""
 def accidentByFactor(data):
+    """
+
+    :param data:
+    :return: a dictionary - (reasons/factors contributing to accident, number of occurrences)
+    """
     reasons = dict()
 
     for row in data.iterrows():
@@ -186,12 +190,12 @@ def accidentByFactor(data):
     return reasons
 
 
-"""
-
-
-returns: a dictionary - (Reasons/Factors contributing to accident, number of occurrences)
-"""
 def accidentByWeekDay(data):
+    """
+
+    :param data:
+    :return: a dictionary - (day of the week the accident occurred, number of occurrences)
+    """
     days = dict()
 
     for week_day in days_of_the_week:
@@ -233,28 +237,35 @@ def accidentByMonth(data):
     return months_dict
 
 
-"""
+def getAccidentDataFrame(data, xlabel, time):
+    """
 
-"""
-def getAccidentDataFrame(data, xlabel):
+    :param data:
+    :param xlabel:
+    :param time:
+    :return:
+    """
     if xlabel == 'Vehicles':
-        return uf.dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents')
+        return uf.dictToDataFrame(accidentByVehicle(data), 'Vehicles', 'Number of Accidents ' + time)
     if xlabel == 'Crash Time':
-        return uf.dictToDataFrame(accidentByTime(data), 'Crash Time', 'Number of Accidents')
+        return uf.dictToDataFrame(accidentByTime(data), 'Crash Time', 'Number of Accidents ' + time)
     if xlabel == 'Borough':
-        return uf.dictToDataFrame(accidentByBorough(data), 'Borough', 'Number of Accidents')
+        return uf.dictToDataFrame(accidentByBorough(data), 'Borough', 'Number of Accidents ' + time)
     if xlabel == 'Factor':
-        return uf.dictToDataFrame(accidentByFactor(data), 'Factor', 'Number of Accidents')
+        return uf.dictToDataFrame(accidentByFactor(data), 'Factor', 'Number of Accidents ' + time)
     if xlabel == 'Week Day':
-        return uf.dictToDataFrame(accidentByWeekDay(data), 'Week Day', 'Number of Accidents')
+        return uf.dictToDataFrame(accidentByWeekDay(data), 'Week Day', 'Number of Accidents ' + time)
     if xlabel == 'Months':
-        return uf.dictToDataFrame(accidentByMonth(data), 'Months', 'Number of Accidents')
+        return uf.dictToDataFrame(accidentByMonth(data), 'Months', 'Number of Accidents ' + time)
 
 
-"""
-
-"""
 def getYearData(data, year):
+    """
+
+    :param data:
+    :param year:
+    :return:
+    """
     rowList = []
 
     for row in data.iterrows():
@@ -267,10 +278,14 @@ def getYearData(data, year):
     return pd.DataFrame.from_records(rowList)
 
 
-"""
-
-"""
 def getMonthData(data, month, year):
+    """
+
+    :param data:
+    :param month:
+    :param year:
+    :return:
+    """
     rowList = []
 
     for row in data.iterrows():
@@ -283,10 +298,12 @@ def getMonthData(data, month, year):
     return pd.DataFrame.from_records(rowList)
 
 
-"""
-
-"""
 def cleanData(data):
+    """
+
+    :param data:
+    :return:
+    """
     rowCount = 0
     for row in data.iterrows():
         row = row[1]
@@ -305,12 +322,13 @@ def cleanData(data):
     return data
 
 
-"""
-
-"""
 def main():
+    """
+
+    :return:
+    """
     if len(sys.argv) < 3:
-        print("Usage: data_cleaning.py filename.csv [month] year")
+        print("Usage: data_cleaning.py <filename.csv> [<month>] <year>")
         return
 
     csv_filename = sys.argv[1]
