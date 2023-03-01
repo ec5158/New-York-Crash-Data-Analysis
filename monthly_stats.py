@@ -18,7 +18,7 @@ def main():
     :return:
     """
     if len(sys.argv) < 3:
-        print("Usage: bar_graphs.py <x-label> <filename1.csv> [<filename2.csv>]")
+        print("Usage: monthly_stats.py <x-label> <filename1.csv> [<filename2.csv>]")
         return
 
     xlabel = sys.argv[1]
