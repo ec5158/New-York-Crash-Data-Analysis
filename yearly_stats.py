@@ -58,6 +58,7 @@ def getAverageDataMonth(year_set):
 
     return year_dict
 
+
 def getAverageData(data_set, xlabel):
     if xlabel == "Months":
         return getAverageDataMonth(data_set)
