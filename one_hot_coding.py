@@ -1,20 +1,23 @@
 # Filename: one_hot_coding.py
-# Desc:
+# Desc: This file performs one hot encoding on CSV files
 #
 # @Author: Eric Chen
 # @Date: 2023-02-16
 #
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 import sys
-import data_cleaning
-import re
 
-"""
 
-"""
 def one_hot_code(data, filename):
+    """
+    Performs one hot encoding on data, which is to say columns of the data
+        will be simplified into lists of numbers of strings in order for
+        other data analysis processes to be performed on them easier
+
+    :param data: the DataFrame that one hot encoding will be performed on
+    :param filename: the name of the original file the data is from
+    :return: None
+    """
     # List of category headers
     categories = ["BOROUGH", "CONTRIBUTING FACTOR VEHICLE 1", "CONTRIBUTING FACTOR VEHICLE 2", "VEHICLE TYPE CODE 1",
                   "VEHICLE TYPE CODE 2", "VEHICLE TYPE CODE 3"]
@@ -33,10 +36,12 @@ def one_hot_code(data, filename):
     print(one_hot_coded.to_string())
 
 
-"""
-
-"""
 def main():
+    """
+    This is the main driver function that handles the command line inputs
+
+    :return: None
+    """
     if len(sys.argv) < 2:
         print("Usage: one_hot_coding.py filename1.csv")
         return
@@ -47,6 +52,7 @@ def main():
     # The data itself
     data = pd.read_csv(filename)
 
+    # Performs one hot encoding on the data
     one_hot_code(data, filename)
 
 
