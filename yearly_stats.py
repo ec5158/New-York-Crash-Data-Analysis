@@ -8,8 +8,10 @@
 # @Author: Eric Chen
 # @Date: 2023-02-22
 #
+
 import util_functions as uf
 import data_cleaning as dcl
+import data_analysis as da
 import bar_graphs as bar
 import pandas as pd
 import sys
@@ -37,7 +39,7 @@ def getAverageDataWeekDay(week_set):
     for year in week_set:
         # Creates a new DataFrame of the number of accidents that occurred every
         #   day of the week for the given year
-        newData = dcl.getAccidentDataFrame(year, xlabel, "")
+        newData = da.getAccidentDataFrame(year, xlabel, "")
 
         rowCount = 0
         # For every accident, gets the number of accidents that occurred and
@@ -75,7 +77,7 @@ def getAverageDataMonth(year_set):
     for year in year_set:
         # Creates a new DataFrame of the number of accidents that occurred every
         #   month for the given year
-        newData = dcl.getAccidentDataFrame(year, xlabel, "")
+        newData = da.getAccidentDataFrame(year, xlabel, "")
 
         rowCount = 0
         # For every accident, gets the number of accidents that occurred and
@@ -140,7 +142,7 @@ def main():
     year1 = re.split('[._]', csv_filename1)[3]
 
     # Gets an accident DataFrame from the first file
-    accidentData1 = dcl.getAccidentDataFrame(data1, xlabel, year1)
+    accidentData1 = da.getAccidentDataFrame(data1, xlabel, year1)
 
     # If there are only two CSV files then compare the two and their data
     if len(sys.argv) == 4:
@@ -149,7 +151,7 @@ def main():
         csv_filename2 = sys.argv[3]
         data2 = pd.read_csv(csv_filename2)
         year2 = re.split('[._]', csv_filename2)[3]
-        accidentData2 = dcl.getAccidentDataFrame(data2, xlabel, year2)
+        accidentData2 = da.getAccidentDataFrame(data2, xlabel, year2)
 
         # Combines the two data sets by taking the number of accidents from the second DataFrame
         #   and appending it to the first

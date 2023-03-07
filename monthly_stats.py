@@ -9,8 +9,9 @@
 # @Author: Eric Chen
 # @Date: 2023-02-24
 #
+
 import util_functions as uf
-import data_cleaning as dcl
+import data_analysis as da
 import bar_graphs as bar
 import pandas as pd
 import sys
@@ -58,7 +59,7 @@ def main():
         csv_filename2 = " "
 
     # Gets an accident DataFrame from the first file
-    accidentData = dcl.getAccidentDataFrame(data1, xlabel, date1)
+    accidentData = da.getAccidentDataFrame(data1, xlabel, date1)
 
     # If there is a second file, then creates a double bar graph that compares
     #   the two data sources
@@ -68,7 +69,7 @@ def main():
         date2 = csv_filename2.split("_")[3] + " " + re.split('[._]', csv_filename2)[4]
 
         # Gets an accident DataFrame from the second file
-        accidentData2 = dcl.getAccidentDataFrame(data2, xlabel, date2)
+        accidentData2 = da.getAccidentDataFrame(data2, xlabel, date2)
         # Combines the two accident DataFrames into one DataFrame
         #   i.e. the column of the number of accidents from the second file is
         #   appended onto the first

@@ -9,8 +9,10 @@
 # @Author: Eric Chen
 # @Date: 2023-03-01
 #
+
 import util_functions as uf
 import data_cleaning as dcl
+import data_analysis as da
 import bar_graphs as bar
 import line_graphs as line
 import pandas as pd
@@ -47,7 +49,7 @@ def getDataBoroughHour(data_set):
     for borough in boroughs[:len(boroughs) - 1]:
         # Gets a DataFrame for the current Borough that contains the time of the accident and the number of accidents
         #   that occurred during this time
-        acc_data = dcl.getAccidentDataFrame(data_set.loc[data_set.BOROUGH == borough], xlabel, borough.title())
+        acc_data = da.getAccidentDataFrame(data_set.loc[data_set.BOROUGH == borough], xlabel, borough.title())
         new_data_set.append(acc_data)
 
     return new_data_set
@@ -93,7 +95,7 @@ def main():
     year1 = re.split('[._]', csv_filename1)[3]
     # Turns the DataFrame into a more simplified one that only has the number of accidents that occurred sorted
     #   by the given x-label
-    accidentData1 = dcl.getAccidentDataFrame(data1, xlabel, year1)
+    accidentData1 = da.getAccidentDataFrame(data1, xlabel, year1)
 
     # If there are only two CSV files then compare the two and their data
     if len(sys.argv) == 4:
@@ -102,7 +104,7 @@ def main():
         csv_filename2 = sys.argv[3]
         data2 = pd.read_csv(csv_filename2)
         year2 = re.split('[._]', csv_filename2)[3]
-        accidentData2 = dcl.getAccidentDataFrame(data2, xlabel, year2)
+        accidentData2 = da.getAccidentDataFrame(data2, xlabel, year2)
 
         # The data is put into lists as the makeMultipleLineGraphs method uses lists
         comparableData = [accidentData1, accidentData2]
