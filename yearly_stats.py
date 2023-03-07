@@ -10,103 +10,11 @@
 #
 
 import util_functions as uf
-import data_cleaning as dcl
 import data_analysis as da
 import bar_graphs as bar
 import pandas as pd
 import sys
 import re
-
-
-def getAverageDataWeekDay(week_set):
-    """
-    Creates a dictionary containing the average number of accidents
-        that happen on a specific day of the week for multiple years
-
-    :param week_set: a list containing DataFrames of different years
-    :return: a dictionary containing the days of the week and the average number of accidents
-             that occurred on that day over multiple years
-    """
-    xlabel = "Week Day"
-
-    week_dict = dict()
-
-    # For every day in days_of_the_week create a key with empty values
-    for day in dcl.days_of_the_week:
-        week_dict[day] = 0
-
-    # Goes through every DataFrame given in the list, year by year
-    for year in week_set:
-        # Creates a new DataFrame of the number of accidents that occurred every
-        #   day of the week for the given year
-        newData = da.getAccidentDataFrame(year, xlabel, "")
-
-        rowCount = 0
-        # For every accident, gets the number of accidents that occurred and
-        #   the day of the week it occurred
-        for row in newData.iterrows():
-            week_dict[dcl.days_of_the_week[rowCount]] += row[1][1]
-            rowCount += 1
-
-    # After getting all the number of accidents sorted by day of the week
-    #   divide by the number of years used to get the average
-    for day in dcl.days_of_the_week:
-        week_dict[day] //= len(week_set)
-
-    return week_dict
-
-
-def getAverageDataMonth(year_set):
-    """
-    Creates a dictionary containing the average number of accidents
-        that happen on a specific month for multiple years
-
-    :param year_set: a list containing DataFrames of different years
-    :return: a dictionary containing the months and the average number of accidents
-             that occurred on those months over multiple years
-    """
-    xlabel = "Months"
-
-    year_dict = dict()
-
-    # For every month in months create a key with empty values
-    for month in dcl.months:
-        year_dict[month] = 0
-
-    # Goes through every DataFrame given in the list, year by year
-    for year in year_set:
-        # Creates a new DataFrame of the number of accidents that occurred every
-        #   month for the given year
-        newData = da.getAccidentDataFrame(year, xlabel, "")
-
-        rowCount = 0
-        # For every accident, gets the number of accidents that occurred and
-        #   the month it occurred
-        for row in newData.iterrows():
-            year_dict[dcl.months[rowCount]] += row[1][1]
-            rowCount += 1
-
-    # After getting all the number of accidents sorted by months
-    #   divide by the number of years used to get the average
-    for month in dcl.months:
-        year_dict[month] //= len(year_set)
-
-    return year_dict
-
-
-def getAverageData(data_set, xlabel):
-    """
-    Helper function to get the right data analysis algorithm and
-        create the desired dictionary of average data
-
-    :param data_set: the list containing multiple DataFrames
-    :param xlabel: the label/category to search with
-    :return:
-    """
-    if xlabel == "Months":
-        return getAverageDataMonth(data_set)
-    elif xlabel == "Week Day":
-        return getAverageDataWeekDay(data_set)
 
 
 def main():
@@ -169,7 +77,7 @@ def main():
             dataSet.append(new_data)
 
         # Gets the average number of accidents of all the years sorted by the given xlabel
-        df_year = uf.dictToDataFrame(getAverageData(dataSet, xlabel), xlabel, ylabel + " Average")
+        df_year = uf.dictToDataFrame(da.getAverageData(dataSet, xlabel), xlabel, ylabel + " Average")
 
         # Combines the two data sets by taking the number of accidents from the second DataFrame
         #   and appending it to the first

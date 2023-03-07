@@ -243,3 +243,50 @@ def getAccidentDataFrame(data, xlabel, time):
         return uf.dictToDataFrame(accidentByWeekDay(data), 'Week Day', 'Number of Accidents ' + time)
     if xlabel == 'Months':
         return uf.dictToDataFrame(accidentByMonth(data), 'Months', 'Number of Accidents ' + time)
+
+
+def getAverageData(year_set, xlabel):
+    """
+    Creates a dictionary containing the average number of accidents
+        that happen under a certain category for multiple years
+
+    :param year_set: a list containing DataFrames of different years
+    :param xlabel: the category or attribute to get the average number of accidents for
+    :return: a dictionary containing the average number of accidents
+             that occurred over multiple years organized by the xlabel
+    """
+    category = ""
+    if xlabel == "Crash Time":
+        category = dcl.time_spans
+    elif xlabel == "Week Day":
+        category = dcl.days_of_the_week
+    elif xlabel == "Borough":
+        category = dcl.boroughs
+    elif xlabel == "Months":
+        category = dcl.months
+
+    new_dict = dict()
+
+    # For every month in months create a key with empty values
+    for item in category:
+        new_dict[item] = 0
+
+    # Goes through every DataFrame given in the list, year by year
+    for year in year_set:
+        # Creates a new DataFrame of the number of accidents that occurred every
+        #   month for the given year
+        newData = getAccidentDataFrame(year, xlabel, "")
+
+        rowCount = 0
+        # For every accident, gets the number of accidents that occurred and
+        #   the month it occurred
+        for row in newData.iterrows():
+            new_dict[category[rowCount]] += row[1][1]
+            rowCount += 1
+
+    # After getting all the number of accidents sorted by months
+    #   divide by the number of years used to get the average
+    for item in category:
+        new_dict[item] //= len(year_set)
+
+    return new_dict

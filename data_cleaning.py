@@ -61,11 +61,11 @@ def simplifyTime(data):
         this_row = row[1]
 
         # Gets the crash time and converts from a string into a float
-        intTime = uf.timeToNum(this_row[2])
+        intTime = uf.timeToNum(this_row[1])
         # Gets the hour from the time
         hrTime = str(math.floor(intTime))
         # Puts a new time-span into the original location
-        data.iloc[rowCount, 2] = hrTime + ':00' + ' - ' + hrTime + ':59'
+        data.iloc[rowCount, 1] = hrTime + ':00' + ' - ' + hrTime + ':59'
 
         rowCount += 1
 
@@ -88,9 +88,9 @@ def simplifyVehicles(data):
         # Gets the specific row of the accident
         this_row = row[1]
 
-        # Vehicle names only appear in the 25th to 30th columns in the data file
+        # Vehicle names only appear in the 24th to 28th columns in the data file
         #   The columns are VEHICLE TYPE CODE 1 - 5
-        for x in range(25, 30):
+        for x in range(24, 29):
             # Gets the name of the vehicle
             key = this_row[x]
             # If the entry is np.NaN then that must mean there are no more vehicles involved to change

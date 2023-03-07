@@ -23,7 +23,7 @@ import re
 def getDataBoroughHour(data_set):
     """
     This function takes a DataFrame of crash data, sorts it by boroughs, and then produces five new
-        DataFrames that represent each borough from NYC and contain the number of accidents that occurried
+        DataFrames that represent each borough from NYC and contain the number of accidents that occurred
         during a specific time period
 
     :param data_set: the full DataFrame from the CSV file
@@ -53,16 +53,6 @@ def getDataBoroughHour(data_set):
         new_data_set.append(acc_data)
 
     return new_data_set
-
-
-def getAverageLineData(data_set, xlabel):
-    # In progress
-    if xlabel == "Crash Time":
-        pass
-    elif xlabel == "Week Day":
-        pass
-    elif xlabel == "Borough":
-        pass
 
 
 def main():
@@ -114,16 +104,22 @@ def main():
         line.makeMultipleLineGraphs(comparableData, xlabel, ylabel, yearSet, year1 + " and " + year2)
     # If there is more than two CSV files, then take the average of the CSV files following
     #   the first one and compare it to the first one
-    # TODO: Get averages
     elif len(sys.argv) > 4:
+        # Creates a list of DataFrames that represents every year given
         dataSet = []
         for file in sys.argv[3:]:
             new_data = pd.read_csv(file)
             dataSet.append(new_data)
 
-        df_year = uf.dictToDataFrame(getAverageLineData(dataSet, xlabel), xlabel, ylabel + ' ' + year1)
-        comparableData = uf.combineData(accidentData1, df_year, ylabel + ' ' + year1)
-        bar.compareGraphs(comparableData, xlabel, ylabel, year1, "Average")
+        # Gets the average number of accidents of all the years sorted by the given xlabel
+        df_year = uf.dictToDataFrame(da.getAverageData(dataSet, xlabel), xlabel, ylabel + " Average")
+
+        # The data is put into lists as the makeMultipleLineGraphs method uses lists
+        comparableData = [accidentData1, df_year]
+        yearSet = [year1, "Average"]
+
+        # Creates the double bar graph using the data
+        line.makeMultipleLineGraphs(comparableData, xlabel, ylabel, yearSet, "Average")
     # If there is only one CSV file inputted then create a graph for it alone
     else:
         # Borough is a special case where the x-axis is actually the time of the crash and
