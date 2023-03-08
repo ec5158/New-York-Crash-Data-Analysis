@@ -23,11 +23,11 @@ The data and CSV files used for this project come from the [NYC OpenData Website
 - [X] Bar graphs that can compare accidents by crash time spans between different months
 - [X] Bar graphs that show accidents by different metrics (day of the week, etc.)
 - [X] Comparing accidents for a given year to average
+- [X] Comparing accidents for a given month to average
+- [X] Comparing accidents by each hour of the day by borough in a certain year
+- [X] Representing data in terms of line charts
 
 ### Works in Progress:
 - [ ] More Testing
 - [ ] Documentation
-- [ ] Comparing accidents for a given month to average
-- [ ] Comparing accidents by each hour of the day by borough in a certain year
-- [ ] Representing data in terms of line charts
 - [ ] Heat Map of accidents in every borough using Parzen Density Estimation
