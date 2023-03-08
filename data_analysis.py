@@ -245,12 +245,12 @@ def getAccidentDataFrame(data, xlabel, time):
         return uf.dictToDataFrame(accidentByMonth(data), 'Months', 'Number of Accidents ' + time)
 
 
-def getAverageData(year_set, xlabel):
+def getAverageData(data_set, xlabel):
     """
     Creates a dictionary containing the average number of accidents
-        that happen under a certain category for multiple years
+        that happen under a certain category for multiple time periods
 
-    :param year_set: a list containing DataFrames of different years
+    :param data_set: a list containing DataFrames of different time periods
     :param xlabel: the category or attribute to get the average number of accidents for
     :return: a dictionary containing the average number of accidents
              that occurred over multiple years organized by the xlabel
@@ -264,29 +264,31 @@ def getAverageData(year_set, xlabel):
         category = dcl.boroughs
     elif xlabel == "Months":
         category = dcl.months
+    elif xlabel == "Vehicles":
+        category = dcl.vehicles_categories
 
     new_dict = dict()
 
-    # For every month in months create a key with empty values
+    # For every item in the category create a key with empty values
     for item in category:
         new_dict[item] = 0
 
-    # Goes through every DataFrame given in the list, year by year
-    for year in year_set:
-        # Creates a new DataFrame of the number of accidents that occurred every
-        #   month for the given year
-        newData = getAccidentDataFrame(year, xlabel, "")
+    # Goes through every DataFrame given in the list
+    for this_data in data_set:
+        # Creates a new DataFrame of the number of accidents that occurred sorted
+        #   by the given category x-label
+        newData = getAccidentDataFrame(this_data, xlabel, "")
 
         rowCount = 0
         # For every accident, gets the number of accidents that occurred and
-        #   the month it occurred
+        #   the category it falls under
         for row in newData.iterrows():
             new_dict[category[rowCount]] += row[1][1]
             rowCount += 1
 
-    # After getting all the number of accidents sorted by months
-    #   divide by the number of years used to get the average
+    # After getting all the number of accidents sorted by the x-label
+    #   divide by the number of DataFrames used to get the average
     for item in category:
-        new_dict[item] //= len(year_set)
+        new_dict[item] //= len(data_set)
 
     return new_dict

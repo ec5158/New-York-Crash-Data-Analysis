@@ -76,7 +76,7 @@ def main():
             new_data = pd.read_csv(file)
             dataSet.append(new_data)
 
-        # Gets the average number of accidents of all the years sorted by the given xlabel
+        # Gets the average number of accidents of all the years sorted by the given x-label
         df_year = uf.dictToDataFrame(da.getAverageData(dataSet, xlabel), xlabel, ylabel + " Average")
 
         # Combines the two data sets by taking the number of accidents from the second DataFrame
@@ -87,7 +87,7 @@ def main():
         bar.compareGraphs(comparableData, xlabel, ylabel, year1, "Average")
     # If there is only one CSV file inputted then create a graph for it alone
     else:
-        bar.makeBarGraph(accidentData1, xlabel, ylabel, year1)
+        bar.makeBarGraph(accidentData1, xlabel, ylabel + " " + year1, year1)
 
 
 # Press the green button in the gutter to run the script.

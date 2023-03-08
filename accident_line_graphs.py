@@ -13,7 +13,6 @@
 import util_functions as uf
 import data_cleaning as dcl
 import data_analysis as da
-import bar_graphs as bar
 import line_graphs as line
 import pandas as pd
 import sys
@@ -40,8 +39,10 @@ def getDataBoroughHour(data_set):
     # Get a list of borough names
     boroughs = data_set['BOROUGH'].unique().tolist()
 
-    # Now we can perform a lookup on a 'view' of the dataframe
-    queens = data_set.loc[data_set.BOROUGH == 'QUEENS']
+    # Now a lookup can be performed on a 'view' of the dataframe
+    #   This part is optional and is not needed to run the rest of the
+    #   program. Just used to check individual boroughs as needed.
+    # queens = data_set.loc[data_set.BOROUGH == 'QUEENS']
 
     new_data_set = []
 

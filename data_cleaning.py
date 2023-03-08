@@ -203,7 +203,7 @@ def cleanData(data):
         colCount = 0
 
         # Goes through every column in the row
-        for columns in data.items():
+        for _ in data.items():
             # Gets the current data entry
             current = row[colCount]
 
