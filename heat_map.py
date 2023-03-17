@@ -1,6 +1,6 @@
 # Filename: heat_map.py
 # Desc: This file creates a heat map about the motor accidents in NYC using
-#       kernel density estimation
+#   kernel density estimation for a given year and/or month
 #
 # @Author: Eric Chen
 # @Date: 2023-03-10
@@ -107,6 +107,7 @@ def main():
     plt.xlim(-74.26, -73.5)
     plt.ylim(40.47, 41.0)
     plt.tight_layout()
+    plt.title("Heat Map of Motor Vehicle Accidents for New York City during " + date)
 
     plt.show()
 
